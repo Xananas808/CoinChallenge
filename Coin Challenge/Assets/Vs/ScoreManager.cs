@@ -2,9 +2,11 @@ using TMPro;
 using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
+    public static ScoreManager Instance;
+    public int score;
     public float timeDuration = 3f * 60f, timer;
-    [SerializeField] private TextMeshProUGUI min1, min2, sep, sec1, sec2;
-    private void Update()
+    [SerializeField] public TextMeshProUGUI min1, min2, sep, sec1, sec2;
+    void Update()
     {
         if (timer > 0)
         {
@@ -24,6 +26,10 @@ public class ScoreManager : MonoBehaviour
     private void ResetTimer()
     {
         timer = timeDuration;
+    }
+    void Awake()
+    {
+        Instance = this;
     }
     private void Start()
     {

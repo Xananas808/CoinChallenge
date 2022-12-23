@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using System.Drawing;
+using UnityEditor.PackageManager;
+using TMPro;
+using System.Collections;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -10,6 +13,8 @@ using UnityEditor;
 public class TrackEditor : MonoBehaviour
 {
     enum Dir { Left, Right }
+
+    public RampartDatas _rampartDatas;
 
     // [HideInInspector]
     [SerializeField]
@@ -74,7 +79,8 @@ public class TrackEditor : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        UpdateMesh();
+        _rampartDatas.Load(this);
+        StartCoroutine(AminationCorout());
     }
 
 #if UNITY_EDITOR
@@ -84,6 +90,11 @@ public class TrackEditor : MonoBehaviour
         if (!Application.isPlaying && _needUpdate) UpdateMesh();
     }
 #endif
+
+    public void LoadMesh()
+    {
+
+    }
 
     public void DisplayWayPoints()
     {
@@ -162,7 +173,7 @@ public class TrackEditor : MonoBehaviour
 
     public void UpdateMesh()
     {
-        if (!Application.isPlaying)SaveWayPoints();
+        if (!Application.isPlaying) SaveWayPoints();
 
         _verts = new List<Vector3>();
         _tris = new List<int>();
@@ -170,7 +181,8 @@ public class TrackEditor : MonoBehaviour
         _colors = new List<UnityEngine.Color>();
 
         Vector3[] _wayPoints = new Vector3[_wayPointList.Count];
-        for (int i = 0; i < _wayPoints.Length; i++) _wayPoints[i] = _wayPointList[i]._transform.position;
+
+        for (int i = 0; i < _wayPoints.Length; i++) _wayPoints[i] = _wayPointList[i]._worldPos;
         _spline = new BezierSpline(_wayPoints);
 
         List<OrientedPoint> _orientedPoints = _spline.GetOrientedPoints(2);
@@ -202,7 +214,11 @@ public class TrackEditor : MonoBehaviour
         SetMeshDatas(_crenel._meshFilter);
         _crenel._collider.sharedMesh = _mesh;
 
-        foreach (var _point in _wayPointList) _point._hasMoved = false;
+        if (!Application.isPlaying)
+        {
+            foreach (var _point in _wayPointList) _point._hasMoved = false;
+            _rampartDatas = new RampartDatas(this);
+        }
 
     }
 
@@ -226,9 +242,9 @@ public class TrackEditor : MonoBehaviour
         _tris.Add(1 + _vertCount);
 
         _uvs.Add(new Vector2(0, 0));
-        _uvs.Add(new Vector2(1, 0));
+        _uvs.Add(new Vector2(1 * _roadWidth, 0));
         _uvs.Add(new Vector2(0, 1));
-        _uvs.Add(new Vector2(1, 1));
+        _uvs.Add(new Vector2(1 * _roadWidth, 1));
     }
 
     void CreateWallSegment(OrientedPoint _startPoint, OrientedPoint _endPoint, Dir _direction)
@@ -289,9 +305,14 @@ public class TrackEditor : MonoBehaviour
 
     public void SetRndVertColor(ObjToRender _obj)
     {
-        if (_obj._meshFilter.sharedMesh == null)
-        return;
-        _obj._meshFilter.sharedMesh.GetColors(_colors);
+        int _colorCount = 0;
+
+        if (_obj._meshFilter.sharedMesh != null)
+        {
+            _obj._meshFilter.sharedMesh.GetColors(_colors);
+            _colorCount = _colors.Count;
+        }
+
         if (_colors.Count == _verts.Count) return;
 
         for (int i = _colors.Count; i < _verts.Count; i++)
@@ -301,18 +322,15 @@ public class TrackEditor : MonoBehaviour
         }
     }
 
-    public Vector3 oa, ob, oc, od;
-
-    public Vector2 a, b, c, d;
 
     void CreateWallCaps(OrientedPoint _point)
     {
         int _vertCount = _verts.Count;
 
-        _verts.Add(_point._pos + (_point._normal * _roadWidth) + oa);
-        _verts.Add(_point._pos - (_point._normal * _roadWidth) + ob);
-        _verts.Add(_point._pos + (_point._normal * _wallBaseWidth) + new Vector3(0, -_wallHeight, 0) + oc);
-        _verts.Add(_point._pos - (_point._normal * _wallBaseWidth) + new Vector3(0, -_wallHeight, 0) + od);
+        _verts.Add(_point._pos + (_point._normal * _roadWidth));
+        _verts.Add(_point._pos - (_point._normal * _roadWidth));
+        _verts.Add(_point._pos + (_point._normal * _wallBaseWidth) + new Vector3(0, -_wallHeight, 0));
+        _verts.Add(_point._pos - (_point._normal * _wallBaseWidth) + new Vector3(0, -_wallHeight, 0));
 
         //  Lower left triangle.
         _tris.Add(1 + _vertCount);
@@ -413,6 +431,38 @@ public class TrackEditor : MonoBehaviour
         return _angle;
     }
 
+    //======================================================= Animation ======================================
+
+    IEnumerator AminationCorout()
+    {
+        List<WayPointAnimationData> _wayPointsDatas = new List<WayPointAnimationData>();
+        WayPointAnimationData _data;
+
+        for (int i = 0; i < _wayPointList.Count; i++)
+        {
+            Vector3 _posTmp = _wayPointList[i]._worldPos;
+            _data = new WayPointAnimationData(_posTmp + new Vector3(0, -20, 0), _posTmp);
+            _wayPointsDatas.Add(_data);
+            _wayPointList[i]._worldPos = _data._startPos;
+        }
+
+        WayPointAnimationData _lastData = _wayPointsDatas.Last();
+
+        while (_lastData._t < 1.1f)
+        {
+            for (int i = 0; i < _wayPointsDatas.Count; i++)
+            {
+                _data = _wayPointsDatas[i];
+                _wayPointList[i]._worldPos = _data.GetPos();
+                _data._t += Time.deltaTime * 0.2f * (((_wayPointsDatas.Count - i) * 0.05f) + 0.7f);
+            }
+
+            UpdateMesh();
+            yield return null;
+
+        }
+    }
+
     [System.Serializable]
     public class WayPoint
     {
@@ -450,5 +500,85 @@ public class TrackEditor : MonoBehaviour
         public MeshCollider _collider;
     }
 
+    [System.Serializable]
+    public class RampartDatas
+    {
+        public RampartDatas(TrackEditor _trackEditor)
+        {
+            _road = new MeshData(_trackEditor._road._meshFilter.sharedMesh);
+            _walls = new MeshData(_trackEditor._walls._meshFilter.sharedMesh);
+            _crenels = new MeshData(_trackEditor._crenel._meshFilter.sharedMesh);
+            _caps = new MeshData(_trackEditor._caps._meshFilter.sharedMesh);
+        }
 
+        public MeshData _road;
+        public MeshData _walls;
+        public MeshData _crenels;
+        public MeshData _caps;
+
+        public void Load(TrackEditor _trackEditor)
+        {
+            _trackEditor._road._meshFilter.sharedMesh = _road.LoadMesh();
+            _trackEditor._walls._meshFilter.sharedMesh = _walls.LoadMesh();
+            _trackEditor._crenel._meshFilter.sharedMesh = _crenels.LoadMesh();
+            _trackEditor._caps._meshFilter.sharedMesh = _caps.LoadMesh();
+
+        }
+    }
+
+
+    [System.Serializable]
+    public class MeshData
+    {
+        public MeshData(Mesh _mesh)
+        {
+            _verts = new List<Vector3>();
+            _mesh.GetVertices(_verts);
+
+            _tris = new List<int>();
+            _mesh.GetTriangles(_tris, 0);
+
+            _uvs = new List<Vector2>();
+            _mesh.GetUVs(0, _uvs);
+
+            _colors = new List<UnityEngine.Color>();
+            _mesh.GetColors(_colors);
+        }
+
+        public List<Vector3> _verts;
+        public List<int> _tris;
+        public List<Vector2> _uvs;
+        public List<UnityEngine.Color> _colors;
+
+        public Mesh LoadMesh()
+        {
+            Mesh mesh = new Mesh();
+            mesh.SetVertices(_verts);
+            mesh.SetTriangles(_tris, 0);
+            mesh.SetUVs(0, _uvs);
+            mesh.SetColors(_colors);
+
+            mesh.RecalculateBounds();
+
+            return mesh;
+        }
+    }
+
+    class WayPointAnimationData
+    {
+        public WayPointAnimationData(Vector3 _startPos, Vector3 _targetPos)
+        {
+            this._startPos = _startPos;
+            this._targetPos = _targetPos;
+        }
+
+        public float _t;
+
+        public Vector3 GetPos()
+        {
+            return Vector3.Lerp(_startPos, _targetPos, _t);
+        }
+
+        public Vector3 _startPos, _targetPos;
+    }
 }

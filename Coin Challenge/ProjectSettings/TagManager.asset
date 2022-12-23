@@ -8,6 +8,8 @@ TagManager:
   - Gold
   - Silver
   - Coper
+  - Chrono
+  - Kill
   layers:
   - Default
   - TransparentFX

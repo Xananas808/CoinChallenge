@@ -1,7 +1,7 @@
 using UnityEngine;
 public class Track : MonoBehaviour
 {
-    public Transform startConnexionPoint, endConnexionPoint, playerCheckPoint, killZone;
+    public Transform startConnexionPoint, endConnexionPoint, playerCheckPoint, killZone, respawnPoint;
     void Start()
     {
 
@@ -14,7 +14,7 @@ public class Track : MonoBehaviour
     {
         if (GameManager.instance.playerMoveCtrl.foot.transform.position.y < killZone.transform.position.y)
         {
-
+            GameManager.instance.playerMoveCtrl.transform.position = TrackManager.instance.activeTrack.transform.position;
         }
     }
 }

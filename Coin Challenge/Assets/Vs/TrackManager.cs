@@ -5,7 +5,7 @@ public class TrackManager : MonoBehaviour
     public static TrackManager instance;
     [SerializeField] List<GameObject> trackPrefabListe;
     [SerializeField] Track startTrack;
-    [SerializeField] Track activeTrack;
+    [SerializeField] public Track activeTrack;
     [SerializeField] List<Track> tracksInstListe = new List<Track>();
     Track lastTrack
     {

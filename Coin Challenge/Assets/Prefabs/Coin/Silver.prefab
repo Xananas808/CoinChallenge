@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 3838927956038097554}
   - component: {fileID: 3256554726717596556}
   - component: {fileID: 3504184199550866074}
-  - component: {fileID: 3821483975792866599}
+  - component: {fileID: 362869282912171542}
+  - component: {fileID: -5524743142369510210}
   m_Layer: 0
   m_Name: Silver
   m_TagString: Silver
@@ -115,8 +116,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates: []
---- !u!65 &3821483975792866599
-BoxCollider:
+--- !u!136 &362869282912171542
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -125,6 +126,20 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 5, y: 5, z: 5}
+  m_Radius: 1.3199999
+  m_Height: 0.44000012
+  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-5524743142369510210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3157624670258121193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0eacb11b2b2fdaf4fbd74a45e91c5c0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coinValue: 10
