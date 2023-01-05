@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 266345796889583448}
   - component: {fileID: 3482111257447777158}
   m_Layer: 0
-  m_Name: Cylinder (1)
+  m_Name: Cylinder2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 5830090931063232144}
   - component: {fileID: 8789458065291532834}
   m_Layer: 0
-  m_Name: Cylinder
+  m_Name: Cylinder1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -280,8 +280,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 9, y: 8.29, z: 1.65}
-  m_Center: {x: 0, y: -4.47, z: 0}
+  m_Size: {x: 9, y: 8.3, z: 1.6}
+  m_Center: {x: 0, y: -4.5, z: 0}
 --- !u!1 &4611541083166763690
 GameObject:
   m_ObjectHideFlags: 0
@@ -294,7 +294,7 @@ GameObject:
   - component: {fileID: 696681734244807933}
   - component: {fileID: 7128879650916579963}
   m_Layer: 0
-  m_Name: Cylinder (2)
+  m_Name: Cylinder3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
