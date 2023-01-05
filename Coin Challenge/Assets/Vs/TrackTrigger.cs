@@ -1,20 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 public class TrackTrigger : MonoBehaviour
 {
-    [SerializeField] Collider trigger;
-    void Start()
-    {
-        
-    }
-    
+    [SerializeField] GameObject porte;
+    [SerializeField] Collider trigger; 
     void OnTriggerEnter(Collider col)
     {
         if (!col.transform.root.CompareTag("Player")) return;
-        Debug.Log("Player Int");
+        porte.SetActive(true);
+        gameObject.SetActive(false);
         TrackManager.instance.SpawnTrack();
-        trigger.enabled = false;
     }
 }

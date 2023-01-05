@@ -5,6 +5,6 @@ public class Program : MonoBehaviour
 {
     static void Main(string[] agrs)
     {
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene(0);
     }
 }

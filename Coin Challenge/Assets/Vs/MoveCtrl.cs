@@ -1,4 +1,3 @@
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 public class MoveCtrl : MonoBehaviour
 {
@@ -9,36 +8,26 @@ public class MoveCtrl : MonoBehaviour
     [SerializeField] Animator animator;
     [SerializeField] public Transform foot;
     [SerializeField] LayerMask mask;
-    bool jumpButtonDown;
+    bool _isGrounded;
     [SerializeField] float speed, jumpForce, sensivity, turnSmoothVelocity;
     float turnSmoothTime = 0.05f;
-    float xRot;
     void Start()
     {
         Physics.gravity = new Vector3(0, -9.81f * 3, 0);
     }
     void Update()
     {
+        _isGrounded = IsGrounded();
         playerInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         MovePlayer();
+        animator.SetBool("IsJumping", !_isGrounded);
         if (Input.GetAxis("Jump") != 0)
         {
-            if (!jumpButtonDown && IsGrounded())
+            if (_isGrounded)
             {
                 Jump();
-                jumpButtonDown = true;
             }
         }
-        if (Input.GetAxis("Jump") == 0)
-        {
-            jumpButtonDown = false;
-        }
-    }
-    void PlayerMove()
-    {
-        Vector3 moveVector = transform.TransformDirection(playerInput) * speed;
-        rb.velocity = new Vector3(moveVector.x, rb.velocity.y, moveVector.z);
-        animator.SetBool("isRunning", moveVector != Vector3.zero);
     }
     void Jump()
     {
@@ -63,16 +52,13 @@ public class MoveCtrl : MonoBehaviour
         Vector3 _moveDir = Quaternion.Euler(0, _targetAngle, 0) * Vector3.forward;
         _moveDir = _moveDir.normalized;
         rb.MovePosition(transform.position + (_moveDir * speed * Time.deltaTime));
-        
-        bool _isGrounded = IsGrounded();
-
-        animator.SetBool("IsJumping", !_isGrounded);
-
-
         if (Input.GetKeyDown(KeyCode.Space) && _isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            GameManager.instance.playerMoveCtrl.transform.position = TrackManager.instance.activeTrack.playerCheckPoint.transform.position;
+        }
     }
-
 }

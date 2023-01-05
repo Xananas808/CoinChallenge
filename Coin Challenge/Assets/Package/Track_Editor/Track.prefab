@@ -147,6 +147,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba9a9c6917c830e468d927e0e9319c3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rampartDatas:
+    _road:
+      _verts: []
+      _tris: 
+      _uvs: []
+      _colors: []
+    _walls:
+      _verts: []
+      _tris: 
+      _uvs: []
+      _colors: []
+    _crenels:
+      _verts: []
+      _tris: 
+      _uvs: []
+      _colors: []
+    _caps:
+      _verts: []
+      _tris: 
+      _uvs: []
+      _colors: []
   _ObjToRender:
   - _meshFilter: {fileID: 8380503759319221557}
     _collider: {fileID: 8380503759319221558}
@@ -159,18 +180,10 @@ MonoBehaviour:
   _wayPointList: []
   _wayPointsParent: {fileID: 8380503757824817658}
   _crenelModel: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-  _crenelScale: {x: 0.79, y: 0.85, z: 0.84}
-  _roadWidth: 1.45
-  _wallHeight: 6
-  _wallBaseWidth: 3.03
-  oa: {x: 0, y: 0, z: 0}
-  ob: {x: 0, y: 0, z: 0}
-  oc: {x: 0, y: 0, z: 0}
-  od: {x: 0, y: 0, z: 0}
-  a: {x: 0, y: 0}
-  b: {x: 0, y: 0}
-  c: {x: 0, y: 0}
-  d: {x: 0, y: 0}
+  _crenelScale: {x: 1, y: 1, z: 1.5}
+  _roadWidth: 4
+  _wallHeight: 4
+  _wallBaseWidth: 5
 --- !u!1 &8380503757824817659
 GameObject:
   m_ObjectHideFlags: 0
@@ -180,6 +193,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8380503757824817658}
+  - component: {fileID: 6627213837068256247}
   m_Layer: 0
   m_Name: Way_Points
   m_TagString: Untagged
@@ -202,6 +216,18 @@ Transform:
   m_Father: {fileID: 8380503757653571537}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6627213837068256247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8380503757824817659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca42277b57d6b6947b953d78f548177f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8380503758121082972
 GameObject:
   m_ObjectHideFlags: 0

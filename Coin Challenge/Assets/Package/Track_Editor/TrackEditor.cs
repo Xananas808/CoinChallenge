@@ -79,14 +79,14 @@ public class TrackEditor : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _rampartDatas.Load(this);
-        StartCoroutine(AminationCorout());
+        //_rampartDatas.Load(this);
+        //StartCoroutine(AminationCorout());
     }
 
 #if UNITY_EDITOR
     private void Update()
     {
-        // UpdateMesh();
+        UpdateMesh();
         if (!Application.isPlaying && _needUpdate) UpdateMesh();
     }
 #endif
@@ -441,7 +441,7 @@ public class TrackEditor : MonoBehaviour
         for (int i = 0; i < _wayPointList.Count; i++)
         {
             Vector3 _posTmp = _wayPointList[i]._worldPos;
-            _data = new WayPointAnimationData(_posTmp + new Vector3(0, -20, 0), _posTmp);
+            _data = new WayPointAnimationData(_posTmp + new Vector3(0, -5, 0), _posTmp);
             _wayPointsDatas.Add(_data);
             _wayPointList[i]._worldPos = _data._startPos;
         }
@@ -454,7 +454,7 @@ public class TrackEditor : MonoBehaviour
             {
                 _data = _wayPointsDatas[i];
                 _wayPointList[i]._worldPos = _data.GetPos();
-                _data._t += Time.deltaTime * 0.2f * (((_wayPointsDatas.Count - i) * 0.05f) + 0.7f);
+                _data._t += Time.deltaTime * 0.5f * (((_wayPointsDatas.Count - i) * 0.05f) + 0.7f);
             }
 
             UpdateMesh();

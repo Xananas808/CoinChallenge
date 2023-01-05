@@ -4,14 +4,15 @@ public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance;
     public int score;
-    public float timeDuration = 3f * 60f, timer;
+    public float timeDuration, remaningTime;
+    public float elapsedTime { get {return timeDuration - remaningTime;} }
     [SerializeField] public TextMeshProUGUI min1, min2, sep, sec1, sec2;
     void Update()
     {
-        if (timer > 0)
+        if (remaningTime > 0)
         {
-            timer -= Time.deltaTime;
-            UpdateTimerDisplay(timer);
+            remaningTime -= Time.deltaTime;
+            UpdateTimerDisplay(remaningTime);
         }
     }
     public void UpdateTimerDisplay(float time)
@@ -23,9 +24,18 @@ public class ScoreManager : MonoBehaviour
         sec1.text = currentTime[2].ToString();
         sec2.text = currentTime[3].ToString();
     }
+    public static void AddTime(float timeToAdd)
+    {
+        Instance.remaningTime+= timeToAdd;
+        if (Instance.remaningTime > Instance.timeDuration) Instance.remaningTime= Instance.timeDuration;
+    }
+    public static void ReverseTime()
+    {
+        Instance.remaningTime = Instance.elapsedTime;
+    }
     private void ResetTimer()
     {
-        timer = timeDuration;
+        remaningTime = timeDuration;
     }
     void Awake()
     {
@@ -35,4 +45,5 @@ public class ScoreManager : MonoBehaviour
     {
         ResetTimer();
     }
+
 }

@@ -236,7 +236,7 @@ Material:
     - _TessellationBackFaceCullEpsilon: -0.25
     - _TessellationFactorMaxDistance: 1000000
     - _TessellationFactorMinDistance: 20
-    - _TessellationFactorTriangleSize: 100
+    - _TessellationFactorTriangleSize: 50
     - _TessellationMaxDisplacement: 0.01
     - _TessellationMode: 0
     - _TessellationShapeFactor: 0.75
